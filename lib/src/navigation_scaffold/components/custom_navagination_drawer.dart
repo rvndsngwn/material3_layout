@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:get/route_manager.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material3_layout/material3_layout.dart';
-import 'package:material3_layout/src/navigation_scaffold/navigation_scaffold_controller.dart';
+
+import '../navigation_scaffold_controller.dart';
 
 /// A custom navigation drawer for the Material3 layout.
-class CustomNavigationDrawer extends GetView<NavigationScaffoldController> {
+class CustomNavigationDrawer extends HookConsumerWidget {
   /// The primary navigation settings for the modal drawer.
   final DrawerSettings settings;
 
@@ -20,20 +20,20 @@ class CustomNavigationDrawer extends GetView<NavigationScaffoldController> {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Obx(() {
-      return NavigationDrawer(
-        selectedIndex: controller.selectedIndex,
-        onDestinationSelected: (int index) {
-          if (onDestinationSelected != null) {
-            onDestinationSelected!(index);
-          }
-          controller.selectedIndex = index;
-          Get.back();
-        },
-        children: settings.destinations,
-      );
-    });
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedIndex = ref.watch(navigationScaffoldControllerProvider);
+    return NavigationDrawer(
+      selectedIndex: selectedIndex,
+      onDestinationSelected: (int index) {
+        if (onDestinationSelected != null) {
+          onDestinationSelected!(index);
+        }
+        ref.read(navigationScaffoldControllerProvider.notifier).setIndex =
+            index;
+        Navigator.pop(context);
+      },
+      children: settings.destinations,
+    );
   }
 
   /// Returns a widget for the drawer title.
@@ -53,12 +53,13 @@ class CustomNavigationDrawer extends GetView<NavigationScaffoldController> {
 }
 
 /// Widget for the navigation drawer title.
-class _NavigationDrawerTitle extends GetView<NavigationScaffoldController> {
+class _NavigationDrawerTitle extends HookConsumerWidget {
   final String title;
   const _NavigationDrawerTitle(this.title);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.watch(navigationScaffoldControllerProvider.notifier);
     return Padding(
       padding: const EdgeInsets.fromLTRB(28.0, 18.0, 8.0, 18.0),
       child: Text(
@@ -72,12 +73,13 @@ class _NavigationDrawerTitle extends GetView<NavigationScaffoldController> {
 }
 
 /// Widget for a section header in the navigation drawer.
-class _NavigationDraweHeader extends GetView<NavigationScaffoldController> {
+class _NavigationDraweHeader extends HookConsumerWidget {
   final String label;
   const _NavigationDraweHeader(this.label);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.watch(navigationScaffoldControllerProvider.notifier);
     return Padding(
       padding: const EdgeInsets.fromLTRB(28.0, 18.0, 8.0, 18.0),
       child: Text(
@@ -91,11 +93,12 @@ class _NavigationDraweHeader extends GetView<NavigationScaffoldController> {
 }
 
 /// Widget for a section divider in the navigation drawer.
-class _NavigationDrawerDivider extends GetView<NavigationScaffoldController> {
+class _NavigationDrawerDivider extends HookConsumerWidget {
   const _NavigationDrawerDivider();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.watch(navigationScaffoldControllerProvider.notifier);
     return Divider(
       indent: 28,
       endIndent: 28,

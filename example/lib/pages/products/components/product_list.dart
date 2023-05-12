@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_test/pages/products/product_page_controller.dart';
 
-class ProductList extends GetView<ProductPageController> {
+class ProductList extends HookConsumerWidget {
   final void Function()? onTap;
   const ProductList({
     Key? key,
@@ -10,12 +10,14 @@ class ProductList extends GetView<ProductPageController> {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.watch(productPageControllerProvider.notifier);
     return ListView.separated(
       itemBuilder: (context, int index) {
         final product = controller.products[index];
         return ListTile(
           dense: false,
+          selected: controller.selectedProduct == product,
           leading: CircleAvatar(
             backgroundImage: AssetImage(product.photoUrl),
           ),

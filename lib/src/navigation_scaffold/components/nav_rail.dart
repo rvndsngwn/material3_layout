@@ -1,61 +1,67 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material3_layout/material3_layout.dart';
-import 'package:material3_layout/src/navigation_scaffold/navigation_scaffold_controller.dart';
 
+import '../navigation_scaffold_controller.dart';
 import 'theme_switcher_button.dart';
 
 /// Widget that builds the navigation rail of the NavigationScaffold.
-class NavRail extends GetView<NavigationScaffoldController> {
+class NavRail extends HookConsumerWidget {
   /// The primary navigation settings for the navigation rail.
   final RailAndBottomSettings settings;
 
   /// A callback function that is called when a destination is selected.
   final void Function(int)? onDestinationSelected;
 
+  final void Function()? onTapThemeSwitcherButton;
+
   const NavRail({
     Key? key,
     required this.settings,
     required this.onDestinationSelected,
+    required this.onTapThemeSwitcherButton,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return ObxValue(
-      (state) => Stack(
-        children: [
-          NavigationRail(
-            backgroundColor: ElevationOverlay.applySurfaceTint(
-              Get.theme.colorScheme.surface,
-              Get.theme.colorScheme.surfaceTint,
-              2,
-            ),
-            groupAlignment: settings.groupAlignment,
-            labelType: settings.labelType,
-            leading: _buildLeading(state),
-            trailing: settings.trailing,
-            extended: state.value,
-            destinations: railDestinations,
-            selectedIndex: controller.selectedIndex,
-            onDestinationSelected: (int index) {
-              if (onDestinationSelected != null) {
-                onDestinationSelected!(index);
-              }
-              controller.selectedIndex = index;
-            },
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedIndex = ref.watch(navigationScaffoldControllerProvider);
+    final controller = ref.watch(navigationScaffoldControllerProvider.notifier);
+    final state = useState(false);
+    return Stack(
+      children: [
+        NavigationRail(
+          backgroundColor: ElevationOverlay.applySurfaceTint(
+            controller.theme.colorScheme.surface,
+            controller.theme.colorScheme.surfaceTint,
+            2,
           ),
-          Positioned(
-            bottom: 8,
-            left: 0,
-            right: 0,
-            child: Visibility(
-              visible: settings.addThemeSwitcherTrailingIcon,
-              child: const ThemeSwitcherButton(),
+          groupAlignment: settings.groupAlignment,
+          labelType: settings.labelType,
+          leading: _buildLeading(state),
+          trailing: settings.trailing,
+          extended: state.value,
+          destinations: railDestinations,
+          selectedIndex: selectedIndex,
+          onDestinationSelected: (int index) {
+            if (onDestinationSelected != null) {
+              onDestinationSelected!(index);
+            }
+            controller.setIndex = index;
+          },
+        ),
+        Positioned(
+          bottom: 8,
+          left: 0,
+          right: 0,
+          child: Visibility(
+            visible: settings.addThemeSwitcherTrailingIcon,
+            child: ThemeSwitcherButton(
+              onTap: onTapThemeSwitcherButton,
             ),
           ),
-        ],
-      ),
-      false.obs,
+        ),
+      ],
     );
   }
 
@@ -64,13 +70,13 @@ class NavRail extends GetView<NavigationScaffoldController> {
   /// If [settings.leading] is not null, it returns that widget. Otherwise, it
   /// returns an IconButton with the menu or menu_open icon depending on the
   /// state of the [state].
-  Widget? _buildLeading(RxBool state) {
+  Widget? _buildLeading(ValueNotifier<bool> state) {
     if (settings.leading != null) {
       return settings.leading!;
     } else if (settings.showMenuIcon) {
       return IconButton(
-        onPressed: state.toggle,
-        icon: Icon(state.isFalse ? Icons.menu : Icons.menu_open),
+        onPressed: () => state.value = !state.value,
+        icon: Icon(!state.value ? Icons.menu : Icons.menu_open),
       );
     } else {
       return null;

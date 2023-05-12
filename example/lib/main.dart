@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material3_layout/material3_layout.dart';
 import 'package:package_test/pages/products/components/details_page.dart';
 import 'package:package_test/pages/products/components/product_list.dart';
@@ -9,38 +9,49 @@ import 'package:package_test/pages/products/product_page_controller.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
+
+ValueNotifier<ThemeMode> currentTheme = ValueNotifier(ThemeMode.light);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.light,
-        colorSchemeSeed: Colors.green,
-      ),
-      darkTheme: ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.dark,
-        colorSchemeSeed: Colors.blue,
-      ),
-      themeMode: ThemeMode.system,
-      home: const ScreenWidget(),
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: currentTheme,
+      builder: (context, theme, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            useMaterial3: true,
+            brightness: Brightness.light,
+            colorSchemeSeed: Colors.green,
+          ),
+          darkTheme: ThemeData(
+            useMaterial3: true,
+            brightness: Brightness.dark,
+            colorSchemeSeed: Colors.blue,
+          ),
+          themeMode: theme,
+          home: const ScreenWidget(),
+        );
+      },
     );
   }
 }
 
-class ScreenWidget extends StatelessWidget {
+class ScreenWidget extends HookConsumerWidget {
   const ScreenWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    Get.put(ProductPageController());
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedProduct = ref.watch(productPageControllerProvider);
     final destinations = <DestinationModel>[
       DestinationModel(
         label: 'Products',
@@ -61,10 +72,15 @@ class ScreenWidget extends StatelessWidget {
       PageLayout(
         compactLayout: SinglePaneLayout(
           child: PaneContainerWidget(
-            borderRadius: 0,
+            //   borderRadius: 0,
+
             child: ProductList(
               onTap: () {
-                Get.to(const DetailsPage());
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const DetailsPage(),
+                  ),
+                );
               },
             ),
           ),
@@ -74,7 +90,11 @@ class ScreenWidget extends StatelessWidget {
           child: PaneContainerWidget(
             child: ProductList(
               onTap: () {
-                Get.to(const DetailsPage());
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const DetailsPage(),
+                  ),
+                );
               },
             ),
           ),
@@ -82,60 +102,55 @@ class ScreenWidget extends StatelessWidget {
         expandedLayout: TwoPaneLayout(
           verticalPadding: 24,
           fixedPaneChild: PaneContainerWidget(
-            surfaceColor: SurfaceColorEnum.surfaceContainerLow,
             child: ProductList(
               onTap: () {},
             ),
           ),
           flexiblePaneChild: PaneContainerWidget(
-            child: Obx(() {
-              final controller = Get.find<ProductPageController>();
-              return Center(
-                  child: Image.asset(controller.selectedProduct.photoUrl));
-            }),
+            child: Center(
+              child: selectedProduct?.photoUrl == null
+                  ? const FlutterLogo(size: 200)
+                  : Image.asset(selectedProduct?.photoUrl ?? ""),
+            ),
           ),
         ),
       ),
       PageLayout(
         compactLayout: SinglePaneLayout(
-          child: PaneContainerWidget(
+          child: const PaneContainerWidget(
             child: Center(
               child: Text(
                 'Compact layout',
-                style: Get.textTheme.headlineMedium,
               ),
             ),
           ),
         ),
         mediumLayout: SplitPaneLayout(
           verticalPadding: 24,
-          leftChild: PaneContainerWidget(
+          leftChild: const PaneContainerWidget(
             surfaceColor: SurfaceColorEnum.surfaceContainerLow,
             child: Center(
               child: Text(
                 'medium layout left child',
-                style: Get.textTheme.headlineMedium,
               ),
             ),
           ),
-          rightChild: PaneContainerWidget(
+          rightChild: const PaneContainerWidget(
             surfaceColor: SurfaceColorEnum.surface,
             child: Center(
               child: Text(
                 'medium layout right child',
-                style: Get.textTheme.headlineMedium,
               ),
             ),
           ),
         ),
-        expandedLayout: TwoPaneLayout(
+        expandedLayout: const TwoPaneLayout(
           verticalPadding: 24,
           fixedPaneChild: PaneContainerWidget(
             surfaceColor: SurfaceColorEnum.surfaceContainerLow,
             child: Center(
               child: Text(
                 'expanded layout fixed pane',
-                style: Get.textTheme.headlineMedium,
               ),
             ),
           ),
@@ -143,7 +158,6 @@ class ScreenWidget extends StatelessWidget {
             child: Center(
               child: Text(
                 'expanded layout flexible pane',
-                style: Get.textTheme.headlineMedium,
               ),
             ),
           ),
@@ -157,13 +171,18 @@ class ScreenWidget extends StatelessWidget {
         title: const Text('Awesome app'),
         centerTitle: true,
       ),
-      theme: Theme.of(context),
+      onTapThemeSwitcherButton: () => currentTheme.value =
+          currentTheme.value == ThemeMode.light
+              ? ThemeMode.dark
+              : ThemeMode.light,
       navigationType: NavigationTypeEnum.railAndBottomNavBar,
       navigationSettings: RailAndBottomSettings(
         addThemeSwitcherTrailingIcon: true,
+        showMenuIcon: true,
         destinations: destinations,
         pages: pages,
       ),
+      theme: Theme.of(context),
       onDestinationSelected: (int index) => log(
         'Page changed: Current page: $index',
       ),

@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-/// Controller class for NavigationScaffold widget.
-class NavigationScaffoldController extends GetxController {
-  /// The [ThemeData] used in the NavigationScaffold.
-  final ThemeData theme;
+part 'navigation_scaffold_controller.g.dart';
 
-  NavigationScaffoldController(this.theme);
+@Riverpod(keepAlive: true)
+class NavigationScaffoldController extends _$NavigationScaffoldController {
+  @override
+  int build() => 0;
 
-  final _selectedIndex = 0.obs;
+  /// * The [ThemeData] used in the NavigationScaffold.
+  late ThemeData _theme;
 
-  /// The current selected index of the primary navigation.
-  int get selectedIndex => _selectedIndex.value;
+  /// * The [ThemeData] used in the NavigationScaffold.
+  ThemeData get theme => _theme;
 
-  /// Sets the current selected index of the primary navigation.
-  set selectedIndex(int value) => _selectedIndex.value = value;
+  /// * The [ThemeData] used in the NavigationScaffold.
+  setTheme(ThemeData value) => _theme = value;
+
+  /// * The current selected index of the primary navigation.
+  int get selectedIndex => state;
+
+  /// * Sets the current selected index of the primary navigation.
+  set setIndex(int value) => state = value;
 }

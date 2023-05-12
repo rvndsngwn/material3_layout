@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:material3_layout/src/navigation_scaffold/navigation_scaffold_controller.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import '../navigation_scaffold_controller.dart';
 
 /// A button widget that toggles the theme mode of the app.
 ///
@@ -11,26 +13,32 @@ import 'package:material3_layout/src/navigation_scaffold/navigation_scaffold_con
 /// ```dart
 /// ThemeSwitcherButton()
 /// ```
-class ThemeSwitcherButton extends GetView<NavigationScaffoldController> {
-  const ThemeSwitcherButton({Key? key}) : super(key: key);
+class ThemeSwitcherButton extends HookConsumerWidget {
+  final void Function()? onTap;
+  const ThemeSwitcherButton({
+    Key? key,
+    required this.onTap,
+  }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      icon: Get.isDarkMode
-          ? const Icon(Icons.light_mode)
-          : const Icon(Icons.dark_mode),
-      onPressed: () {
-        Get.changeThemeMode(
-          Get.isDarkMode ? ThemeMode.light : ThemeMode.dark,
-        );
-      },
-      style: IconButton.styleFrom(
-        shape: const CircleBorder(),
-        side: BorderSide(
-          color: controller.theme.colorScheme.outline,
-        ),
-      ),
-    );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.watch(navigationScaffoldControllerProvider.notifier);
+    var brightness =
+        SchedulerBinding.instance.platformDispatcher.platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+    return onTap == null
+        ? const SizedBox.shrink()
+        : IconButton(
+            icon: isDarkMode
+                ? const Icon(Icons.light_mode)
+                : const Icon(Icons.dark_mode),
+            onPressed: onTap,
+            style: IconButton.styleFrom(
+              shape: const CircleBorder(),
+              side: BorderSide(
+                color: controller.theme.colorScheme.outline,
+              ),
+            ),
+          );
   }
 }

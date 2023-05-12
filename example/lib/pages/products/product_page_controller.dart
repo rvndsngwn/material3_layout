@@ -1,16 +1,11 @@
-import 'package:get/get.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_test/pages/products/product_model.dart';
 
-class ProductPageController extends GetxController {
-  late Rx<ProductModel> _selectedProduct;
-  @override
-  void onInit() {
-    _selectedProduct = products.first.obs;
-    super.onInit();
-  }
+class ProductPageController extends StateNotifier<ProductModel?> {
+  ProductPageController() : super(null);
 
-  ProductModel get selectedProduct => _selectedProduct.value;
-  set selectedProduct(ProductModel value) => _selectedProduct.value = value;
+  ProductModel get selectedProduct => state ?? products.first;
+  set selectedProduct(ProductModel value) => state = value;
 
   final List<ProductModel> products = [
     ProductModel(
@@ -44,3 +39,7 @@ class ProductPageController extends GetxController {
     ),
   ];
 }
+
+final productPageControllerProvider =
+    StateNotifierProvider<ProductPageController, ProductModel?>(
+        (ref) => ProductPageController());

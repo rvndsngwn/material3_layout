@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:material3_layout/src/breakpoints.dart';
 import 'package:material3_layout/src/layouts/layout.dart';
 
@@ -34,13 +33,13 @@ class PageLayout extends StatelessWidget {
       return compactLayout;
     }
     if (layout == LayoutEnum.medium) {
-      if (GetUtils.isNull(mediumLayout)) {
+      if (mediumLayout == null) {
         return compactLayout;
       }
       return mediumLayout!;
     }
     if (layout == LayoutEnum.expanded) {
-      if (GetUtils.isNull(expandedLayout)) {
+      if (mediumLayout == null) {
         return mediumLayout ?? const SizedBox.shrink();
       }
       return expandedLayout!;

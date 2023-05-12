@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material3_layout/material3_layout.dart';
 import 'package:material3_layout/src/breakpoints.dart';
 import 'package:material3_layout/src/models/navigation_settings.dart';
@@ -28,7 +28,7 @@ import 'components/bottom_nav_bar.dart';
 ///   },
 /// )
 /// ```
-class NavigationScaffold extends GetView<NavigationScaffoldController> {
+class NavigationScaffold extends HookConsumerWidget {
   /// A callback function that is called when a destination is selected in the primary
   /// navigation rail or bottom navigation bar or modal drawer.
   final void Function(int)? onDestinationSelected;
@@ -50,6 +50,8 @@ class NavigationScaffold extends GetView<NavigationScaffoldController> {
   /// If you want use modal drawer, as primary navigation in your app, than pass `RailAndBottomSettings`
   final NavigationSettings navigationSettings;
 
+  final void Function()? onTapThemeSwitcherButton;
+
   /// Creates a new [NavigationScaffold] widget.
   ///
   /// The [navigationSettings] parameter must be provided.
@@ -68,16 +70,17 @@ class NavigationScaffold extends GetView<NavigationScaffoldController> {
     required this.navigationSettings,
     required this.theme,
     this.appBar,
+    this.onTapThemeSwitcherButton,
   }) : assert(
           navigationSettings.type == navigationType,
           'Wrong navigationType. NavigationType must be the same as in navigationSettings',
         );
 
   @override
-  Widget build(BuildContext context) {
-    Get.put(NavigationScaffoldController(theme));
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedIndex = ref.watch(navigationScaffoldControllerProvider);
+    ref.watch(navigationScaffoldControllerProvider.notifier).setTheme(theme);
     var layout = Breakpoints.getLayout(context);
-
     return Scaffold(
       backgroundColor:
           NewSurfaceTheme.getSurfaceColor(SurfaceColorEnum.surface, context),
@@ -88,9 +91,7 @@ class NavigationScaffold extends GetView<NavigationScaffoldController> {
           children: [
             _buildPrimaryNavigation(layout),
             Flexible(
-              child: Obx(
-                () => navigationSettings.pages[controller.selectedIndex],
-              ),
+              child: navigationSettings.pages[selectedIndex],
             ),
           ],
         ),
@@ -117,6 +118,7 @@ class NavigationScaffold extends GetView<NavigationScaffoldController> {
     return NavRail(
       settings: navigationSettings as RailAndBottomSettings,
       onDestinationSelected: onDestinationSelected,
+      onTapThemeSwitcherButton: onTapThemeSwitcherButton,
     );
   }
 
