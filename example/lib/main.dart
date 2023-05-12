@@ -16,7 +16,7 @@ void main() {
   );
 }
 
-ValueNotifier<ThemeMode> currentTheme = ValueNotifier(ThemeMode.light);
+ValueNotifier<ThemeMode> currentTheme = ValueNotifier(ThemeMode.system);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

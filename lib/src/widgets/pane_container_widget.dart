@@ -55,16 +55,22 @@ class PaneContainerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: padding,
-      child: Material(
+      child: ClipRRect(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(topBorderRadius),
           bottom: Radius.circular(bottomBorderRadius),
         ),
-        color: NewSurfaceTheme.getSurfaceColor(surfaceColor, context),
-        child: SizedBox(
-          width: width,
-          height: height,
-          child: child,
+        child: Material(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(topBorderRadius),
+            bottom: Radius.circular(bottomBorderRadius),
+          ),
+          color: NewSurfaceTheme.getSurfaceColor(surfaceColor, context),
+          child: SizedBox(
+            width: width,
+            height: height,
+            child: child,
+          ),
         ),
       ),
     );

@@ -12,32 +12,34 @@ class ProductList extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.watch(productPageControllerProvider.notifier);
-    return ListView.separated(
-      itemBuilder: (context, int index) {
-        final product = controller.products[index];
-        return ListTile(
-          dense: false,
-          selected: controller.selectedProduct == product,
-          leading: CircleAvatar(
-            backgroundImage: AssetImage(product.photoUrl),
-          ),
-          title: Text(product.title),
-          subtitle: Text(
-            product.description,
-            maxLines: 2,
-          ),
-          trailing: Text('${product.price} руб'),
-          onTap: () {
-            controller.selectedProduct = product;
-            onTap!();
-          },
-          isThreeLine: false,
-        );
-      },
-      separatorBuilder: (context, int index) {
-        return const Divider();
-      },
-      itemCount: controller.products.length,
+    return Scaffold(
+      body: ListView.separated(
+        itemBuilder: (context, int index) {
+          final product = controller.products[index];
+          return ListTile(
+            dense: false,
+            selected: controller.selectedProduct == product,
+            leading: CircleAvatar(
+              backgroundImage: AssetImage(product.photoUrl),
+            ),
+            title: Text(product.title),
+            subtitle: Text(
+              product.description,
+              maxLines: 2,
+            ),
+            trailing: Text('${product.price} руб'),
+            onTap: () {
+              controller.selectedProduct = product;
+              onTap!();
+            },
+            isThreeLine: false,
+          );
+        },
+        separatorBuilder: (context, int index) {
+          return const Divider();
+        },
+        itemCount: controller.products.length,
+      ),
     );
   }
 }
