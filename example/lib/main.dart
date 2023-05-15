@@ -7,6 +7,8 @@ import 'package:package_test/pages/products/components/details_page.dart';
 import 'package:package_test/pages/products/components/product_list.dart';
 import 'package:package_test/pages/products/product_page_controller.dart';
 
+import 'pages/products/product_model.dart';
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(
@@ -73,7 +75,6 @@ class ScreenWidget extends HookConsumerWidget {
         compactLayout: SinglePaneLayout(
           child: PaneContainerWidget(
             //   borderRadius: 0,
-
             child: ProductList(
               onTap: () {
                 Navigator.of(context).push(
@@ -101,10 +102,42 @@ class ScreenWidget extends HookConsumerWidget {
         ),
         expandedLayout: TwoPaneLayout(
           verticalPadding: 24,
-          fixedPaneChild: PaneContainerWidget(
-            child: ProductList(
-              onTap: () {},
-            ),
+          fixedPaneChild: Column(
+            children: [
+              Card(
+                margin: const EdgeInsets.only(bottom: 10),
+                color: Theme.of(context).colorScheme.surfaceVariant,
+                child: ListTile(
+                  title: Text(
+                    'Products',
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.add),
+                    onPressed: () {
+                      ref
+                          .read(productPageControllerProvider.notifier)
+                          .products
+                          .add(
+                            ProductModel(
+                              title: 'Пицца Маргарита',
+                              description:
+                                  'томатный соус, моцарелла, пармезан, базилик, оливковое масло',
+                              photoUrl: 'assets/margarita.jpeg',
+                            ),
+                          );
+                    },
+                  ),
+                ),
+              ),
+              Expanded(
+                child: PaneContainerWidget(
+                  child: ProductList(
+                    onTap: () {},
+                  ),
+                ),
+              ),
+            ],
           ),
           flexiblePaneChild: PaneContainerWidget(
             child: Center(

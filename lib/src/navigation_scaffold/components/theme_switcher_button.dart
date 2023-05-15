@@ -23,9 +23,8 @@ class ThemeSwitcherButton extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.watch(navigationScaffoldControllerProvider.notifier);
-    var brightness =
-        SchedulerBinding.instance.platformDispatcher.platformBrightness;
-    bool isDarkMode = brightness == Brightness.dark;
+    final Brightness brightness = Theme.of(context).brightness;
+    final bool isDarkMode = brightness == Brightness.dark;
     return onTap == null
         ? const SizedBox.shrink()
         : IconButton(
