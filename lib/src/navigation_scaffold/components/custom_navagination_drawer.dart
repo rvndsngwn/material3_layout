@@ -1,37 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material3_layout/material3_layout.dart';
 
-import '../navigation_scaffold_controller.dart';
-
 /// A custom navigation drawer for the Material3 layout.
-class CustomNavigationDrawer extends HookConsumerWidget {
+class CustomNavigationDrawer extends StatelessWidget {
   /// The primary navigation settings for the modal drawer.
   final DrawerSettings settings;
 
   /// A callback function that is called when a destination is selected.
   final void Function(int)? onDestinationSelected;
 
+  final int selectedIndex;
+
   /// A custom navigation drawer for the Material3 layout.
   const CustomNavigationDrawer({
     Key? key,
     required this.settings,
     this.onDestinationSelected,
+    this.selectedIndex = 0,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final selectedIndex = ref.watch(navigationScaffoldControllerProvider);
+  Widget build(BuildContext context) {
     return NavigationDrawer(
       selectedIndex: selectedIndex,
-      onDestinationSelected: (int index) {
-        if (onDestinationSelected != null) {
-          onDestinationSelected!(index);
-        }
-        ref.read(navigationScaffoldControllerProvider.notifier).setIndex =
-            index;
-        Navigator.pop(context);
-      },
+      onDestinationSelected: onDestinationSelected,
       children: settings.destinations,
     );
   }
@@ -53,18 +45,18 @@ class CustomNavigationDrawer extends HookConsumerWidget {
 }
 
 /// Widget for the navigation drawer title.
-class _NavigationDrawerTitle extends HookConsumerWidget {
+class _NavigationDrawerTitle extends StatelessWidget {
   final String title;
   const _NavigationDrawerTitle(this.title);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.watch(navigationScaffoldControllerProvider.notifier);
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(28.0, 18.0, 8.0, 18.0),
       child: Text(
         title,
-        style: controller.theme.textTheme.titleSmall,
+        style: theme.textTheme.titleSmall,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
@@ -73,18 +65,18 @@ class _NavigationDrawerTitle extends HookConsumerWidget {
 }
 
 /// Widget for a section header in the navigation drawer.
-class _NavigationDraweHeader extends HookConsumerWidget {
+class _NavigationDraweHeader extends StatelessWidget {
   final String label;
   const _NavigationDraweHeader(this.label);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.watch(navigationScaffoldControllerProvider.notifier);
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(28.0, 18.0, 8.0, 18.0),
       child: Text(
         label,
-        style: controller.theme.textTheme.titleSmall,
+        style: theme.textTheme.titleSmall,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
@@ -93,18 +85,18 @@ class _NavigationDraweHeader extends HookConsumerWidget {
 }
 
 /// Widget for a section divider in the navigation drawer.
-class _NavigationDrawerDivider extends HookConsumerWidget {
+class _NavigationDrawerDivider extends StatelessWidget {
   const _NavigationDrawerDivider();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.watch(navigationScaffoldControllerProvider.notifier);
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Divider(
       indent: 28,
       endIndent: 28,
       height: 1,
       thickness: 1,
-      color: controller.theme.colorScheme.outlineVariant,
+      color: theme.colorScheme.outlineVariant,
     );
   }
 }

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material3_layout/material3_layout.dart';
 import 'package:material3_layout/src/breakpoints.dart';
 import 'package:material3_layout/src/models/navigation_settings.dart';
 import 'package:material3_layout/src/navigation_scaffold/components/nav_rail.dart';
-import 'package:material3_layout/src/navigation_scaffold/navigation_scaffold_controller.dart';
 import 'package:material3_layout/src/theme/new_surface_theme.dart';
 
 import 'components/bottom_nav_bar.dart';
@@ -28,7 +26,7 @@ import 'components/bottom_nav_bar.dart';
 ///   },
 /// )
 /// ```
-class NavigationScaffold extends HookConsumerWidget {
+class NavigationScaffold extends StatelessWidget {
   /// A callback function that is called when a destination is selected in the primary
   /// navigation rail or bottom navigation bar or modal drawer.
   final void Function(int)? onDestinationSelected;
@@ -52,6 +50,8 @@ class NavigationScaffold extends HookConsumerWidget {
 
   final void Function()? onTapThemeSwitcherButton;
 
+  final int selectedIndex;
+
   /// Creates a new [NavigationScaffold] widget.
   ///
   /// The [navigationSettings] parameter must be provided.
@@ -66,6 +66,7 @@ class NavigationScaffold extends HookConsumerWidget {
   NavigationScaffold({
     super.key,
     this.onDestinationSelected,
+    this.selectedIndex = 0,
     this.navigationType = NavigationTypeEnum.railAndBottomNavBar,
     required this.navigationSettings,
     required this.theme,
@@ -77,9 +78,7 @@ class NavigationScaffold extends HookConsumerWidget {
         );
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final selectedIndex = ref.watch(navigationScaffoldControllerProvider);
-    ref.watch(navigationScaffoldControllerProvider.notifier).setTheme(theme);
+  Widget build(BuildContext context) {
     var layout = Breakpoints.getLayout(context);
     return Scaffold(
       backgroundColor:
@@ -116,6 +115,7 @@ class NavigationScaffold extends HookConsumerWidget {
     }
 
     return NavRail(
+      selectedIndex: selectedIndex,
       settings: navigationSettings as RailAndBottomSettings,
       onDestinationSelected: onDestinationSelected,
       onTapThemeSwitcherButton: onTapThemeSwitcherButton,
@@ -129,6 +129,7 @@ class NavigationScaffold extends HookConsumerWidget {
       return null;
     }
     return BottomNavBar(
+      selectedIndex: selectedIndex,
       settings: navigationSettings as RailAndBottomSettings,
       onDestinationSelected: onDestinationSelected,
     );
@@ -143,6 +144,7 @@ class NavigationScaffold extends HookConsumerWidget {
     }
 
     return CustomNavigationDrawer(
+      selectedIndex: selectedIndex,
       settings: navigationSettings as DrawerSettings,
       onDestinationSelected: onDestinationSelected,
     );

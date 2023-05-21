@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-
-import '../navigation_scaffold_controller.dart';
 
 /// A button widget that toggles the theme mode of the app.
 ///
@@ -13,7 +9,7 @@ import '../navigation_scaffold_controller.dart';
 /// ```dart
 /// ThemeSwitcherButton()
 /// ```
-class ThemeSwitcherButton extends HookConsumerWidget {
+class ThemeSwitcherButton extends StatelessWidget {
   final void Function()? onTap;
   const ThemeSwitcherButton({
     Key? key,
@@ -21,8 +17,8 @@ class ThemeSwitcherButton extends HookConsumerWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.watch(navigationScaffoldControllerProvider.notifier);
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final Brightness brightness = Theme.of(context).brightness;
     final bool isDarkMode = brightness == Brightness.dark;
     return onTap == null
@@ -35,7 +31,7 @@ class ThemeSwitcherButton extends HookConsumerWidget {
             style: IconButton.styleFrom(
               shape: const CircleBorder(),
               side: BorderSide(
-                color: controller.theme.colorScheme.outline,
+                color: theme.colorScheme.outline,
               ),
             ),
           );

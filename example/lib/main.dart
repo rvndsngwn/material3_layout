@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material3_layout/material3_layout.dart';
 import 'package:package_test/pages/products/components/details_page.dart';
@@ -197,7 +198,7 @@ class ScreenWidget extends HookConsumerWidget {
         ),
       ),
     ];
-
+    final selectedIndex = useState(0);
     return NavigationScaffold(
       appBar: AppBar(
         elevation: 2,
@@ -210,15 +211,19 @@ class ScreenWidget extends HookConsumerWidget {
               : ThemeMode.light,
       navigationType: NavigationTypeEnum.railAndBottomNavBar,
       navigationSettings: RailAndBottomSettings(
-        addThemeSwitcherTrailingIcon: true,
+        addThemeSwitcherTrailingIcon: false,
         showMenuIcon: true,
         destinations: destinations,
         pages: pages,
       ),
       theme: Theme.of(context),
-      onDestinationSelected: (int index) => log(
-        'Page changed: Current page: $index',
-      ),
+      selectedIndex: selectedIndex.value,
+      onDestinationSelected: (int index) {
+        log(
+          'Page changed: Current page: $index',
+        );
+        selectedIndex.value = index;
+      },
     );
   }
 }
