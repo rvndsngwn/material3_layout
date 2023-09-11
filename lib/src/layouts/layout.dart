@@ -1,3 +1,3 @@
 import 'package:flutter/material.dart';
 
-abstract class Layout implements StatelessWidget {}
+mixin Layout implements StatelessWidget {}

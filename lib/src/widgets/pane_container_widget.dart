@@ -12,6 +12,9 @@ class PaneContainerWidget extends StatelessWidget {
   /// The color of the surface of the container. Defaults to [SurfaceColorEnum.surface].
   final SurfaceColorEnum surfaceColor;
 
+  /// The color of the surface of the container. Defaults to [SurfaceColorEnum.surface]. This color is override by the [surfaceColor] property. Use one or the other.
+  final Color? color;
+
   /// The padding for the container's child widget. Defaults to [EdgeInsets.zero].
   final EdgeInsetsGeometry padding;
 
@@ -49,6 +52,7 @@ class PaneContainerWidget extends StatelessWidget {
     this.width = double.infinity,
     this.topBorderRadius = 12,
     this.bottomBorderRadius = 12,
+    this.color,
   }) : super(key: key);
 
   @override
@@ -65,7 +69,8 @@ class PaneContainerWidget extends StatelessWidget {
             top: Radius.circular(topBorderRadius),
             bottom: Radius.circular(bottomBorderRadius),
           ),
-          color: NewSurfaceTheme.getSurfaceColor(surfaceColor, context),
+          color:
+              color ?? NewSurfaceTheme.getSurfaceColor(surfaceColor, context),
           child: SizedBox(
             width: width,
             height: height,

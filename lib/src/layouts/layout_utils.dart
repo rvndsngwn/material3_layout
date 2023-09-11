@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:material3_layout/src/breakpoints.dart';
 
-class LayoutUtils {
+mixin LayoutUtils {
   /// Horizontal margin for compact layout
   double get compactLayoutMargin => 16.0;
 

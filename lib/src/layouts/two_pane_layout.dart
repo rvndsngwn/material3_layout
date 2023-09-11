@@ -19,6 +19,17 @@ class TwoPaneLayout extends StatelessWidget with LayoutUtils, Layout {
 
   /// The amount of vertical padding to apply around the layout.
   final double verticalPadding;
+  final MaterialType type;
+  final double elevation;
+  final Color? color;
+  final Color? shadowColor;
+  final Color? surfaceTintColor;
+  final TextStyle? textStyle;
+  final BorderRadiusGeometry? borderRadius;
+  final ShapeBorder? shape;
+  final bool borderOnForeground;
+  final Clip clipBehavior;
+  final Duration animationDuration;
 
   const TwoPaneLayout({
     super.key,
@@ -26,16 +37,34 @@ class TwoPaneLayout extends StatelessWidget with LayoutUtils, Layout {
     required this.flexiblePaneChild,
     this.fixedPanePosition = FixedPanePositionEnum.left,
     this.verticalPadding = 0,
+    this.type = MaterialType.card,
+    this.elevation = 2.0,
+    this.color,
+    this.shadowColor = Colors.transparent,
+    this.surfaceTintColor,
+    this.textStyle,
+    this.borderRadius,
+    this.shape,
+    this.borderOnForeground = true,
+    this.clipBehavior = Clip.none,
+    this.animationDuration = kThemeChangeDuration,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Material(
-      color: theme.colorScheme.surface,
-      surfaceTintColor: theme.colorScheme.surfaceTint,
-      shadowColor: Colors.transparent,
-      elevation: 2,
+      color: color ?? theme.colorScheme.surface,
+      surfaceTintColor: surfaceTintColor ?? theme.colorScheme.surfaceTint,
+      shadowColor: shadowColor,
+      elevation: elevation,
+      textStyle: textStyle,
+      borderRadius: borderRadius,
+      shape: shape,
+      borderOnForeground: borderOnForeground,
+      clipBehavior: clipBehavior,
+      animationDuration: animationDuration,
+      type: type,
       child: Padding(
         padding: layoutSpacing(verticalPadding, context),
         child: Builder(

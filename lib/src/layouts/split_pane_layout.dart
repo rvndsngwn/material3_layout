@@ -8,12 +8,34 @@ class SplitPaneLayout extends StatelessWidget with LayoutUtils, Layout {
   final Widget leftChild;
   final Widget rightChild;
   final double verticalPadding;
+  final MaterialType type;
+  final double elevation;
+  final Color? color;
+  final Color? shadowColor;
+  final Color? surfaceTintColor;
+  final TextStyle? textStyle;
+  final BorderRadiusGeometry? borderRadius;
+  final ShapeBorder? shape;
+  final bool borderOnForeground;
+  final Clip clipBehavior;
+  final Duration animationDuration;
 
   SplitPaneLayout({
     super.key,
     required this.leftChild,
     required this.rightChild,
     this.verticalPadding = 0,
+    this.type = MaterialType.card,
+    this.elevation = 2.0,
+    this.color,
+    this.shadowColor = Colors.transparent,
+    this.surfaceTintColor,
+    this.textStyle,
+    this.borderRadius,
+    this.shape,
+    this.borderOnForeground = true,
+    this.clipBehavior = Clip.none,
+    this.animationDuration = kThemeChangeDuration,
   });
 
   @override
@@ -21,10 +43,17 @@ class SplitPaneLayout extends StatelessWidget with LayoutUtils, Layout {
     final theme = Theme.of(context);
     // Use a Material widget as the container to apply a shadow and background color.
     return Material(
-      color: theme.colorScheme.surface,
-      surfaceTintColor: theme.colorScheme.surfaceTint,
-      shadowColor: Colors.transparent,
-      elevation: 2,
+      color: color ?? theme.colorScheme.surface,
+      surfaceTintColor: surfaceTintColor ?? theme.colorScheme.surfaceTint,
+      shadowColor: shadowColor,
+      elevation: elevation,
+      textStyle: textStyle,
+      borderRadius: borderRadius,
+      shape: shape,
+      borderOnForeground: borderOnForeground,
+      clipBehavior: clipBehavior,
+      animationDuration: animationDuration,
+      type: type,
       child: Container(
         margin: layoutSpacing(verticalPadding, context),
         child: Row(
