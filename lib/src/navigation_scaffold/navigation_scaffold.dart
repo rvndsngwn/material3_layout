@@ -64,10 +64,7 @@ class NavigationScaffold extends StatelessWidget {
   ///
   /// Throws an [AssertionError] if the [navigationSettings.type] is not equal to the [navigationType].
   ///
-  /// [body] is the widget that will be displayed in the main content area of the scaffold.
-  /// if body is null, the [navigationSettings.pages] will be displayed.
-  ///
-  final Widget? body;
+
   NavigationScaffold({
     super.key,
     this.onDestinationSelected,
@@ -77,7 +74,6 @@ class NavigationScaffold extends StatelessWidget {
     required this.theme,
     this.appBar,
     this.onTapThemeSwitcherButton,
-    this.body,
   }) : assert(
           navigationSettings.type == navigationType,
           'Wrong navigationType. NavigationType must be the same as in navigationSettings',
@@ -96,7 +92,7 @@ class NavigationScaffold extends StatelessWidget {
           children: [
             _buildPrimaryNavigation(layout),
             Flexible(
-              child: body ?? navigationSettings.pages[selectedIndex],
+              child: navigationSettings.body,
             ),
           ],
         ),

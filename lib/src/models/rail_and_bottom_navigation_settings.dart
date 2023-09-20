@@ -38,7 +38,7 @@ class RailAndBottomSettings extends NavigationSettings<DestinationModel> {
   ///
   /// [destinations] - The list of [DestinationModel] objects to display in the navigation rail.
   ///
-  /// [pages] - The list of [Widget] objects that correspond to each [DestinationModel] in the [destinations] list.
+  /// [body] - The widget body to display.
   RailAndBottomSettings(
       {this.leading,
       this.trailing,
@@ -47,12 +47,8 @@ class RailAndBottomSettings extends NavigationSettings<DestinationModel> {
       this.addThemeSwitcherTrailingIcon = false,
       this.labelType,
       required super.destinations,
-      required super.pages,
+      required super.body,
       super.type = NavigationTypeEnum.railAndBottomNavBar}) {
-    assert(
-      destinations.length == pages.length,
-      'Destinations must be the same length as pages',
-    );
     assert(
       showMenuIcon == false || leading == null,
       'Cannot provide both showMenuIcon and leading properties.',

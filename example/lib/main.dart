@@ -111,7 +111,7 @@ class ScreenWidget extends HookConsumerWidget {
                 child: ListTile(
                   title: Text(
                     'Products',
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   trailing: IconButton(
                     icon: const Icon(Icons.add),
@@ -214,7 +214,7 @@ class ScreenWidget extends HookConsumerWidget {
         addThemeSwitcherTrailingIcon: false,
         showMenuIcon: true,
         destinations: destinations,
-        pages: pages,
+        body: pages[selectedIndex.value],
       ),
       theme: Theme.of(context),
       selectedIndex: selectedIndex.value,
