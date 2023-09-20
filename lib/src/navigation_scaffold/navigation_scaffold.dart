@@ -63,6 +63,11 @@ class NavigationScaffold extends StatelessWidget {
   /// The [appBar] parameter specifies the app bar to display at the top of the screen. By default, it is null.
   ///
   /// Throws an [AssertionError] if the [navigationSettings.type] is not equal to the [navigationType].
+  ///
+  /// [body] is the widget that will be displayed in the main content area of the scaffold.
+  /// if body is null, the [navigationSettings.pages] will be displayed.
+  ///
+  final Widget? body;
   NavigationScaffold({
     super.key,
     this.onDestinationSelected,
@@ -72,6 +77,7 @@ class NavigationScaffold extends StatelessWidget {
     required this.theme,
     this.appBar,
     this.onTapThemeSwitcherButton,
+    this.body,
   }) : assert(
           navigationSettings.type == navigationType,
           'Wrong navigationType. NavigationType must be the same as in navigationSettings',
@@ -90,7 +96,7 @@ class NavigationScaffold extends StatelessWidget {
           children: [
             _buildPrimaryNavigation(layout),
             Flexible(
-              child: navigationSettings.pages[selectedIndex],
+              child: body ?? navigationSettings.pages[selectedIndex],
             ),
           ],
         ),

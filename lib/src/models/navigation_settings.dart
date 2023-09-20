@@ -14,7 +14,7 @@ abstract class NavigationSettings<T> {
 
   /// Constructor that initializes the properties of the navigation settings object.
   NavigationSettings({
-    required this.pages,
+    this.pages = const <Widget>[],
     required this.destinations,
     required this.type,
   });
